@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node<T> {
-    public IItem item;
+    public Item<T> item;
     public List<Node<T>> forwards;
 
-    public Node(IItem item) {
+    public Node(Item<T> item) {
         this.forwards = new ArrayList<>();
         this.item = item;
     }

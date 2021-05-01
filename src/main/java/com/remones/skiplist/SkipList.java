@@ -36,11 +36,11 @@ public class SkipList<T> {
         return this.maxLevel;
     }
 
-    public void insert(IItem item) {
+    public void insert(Item<T> item) {
         Node<T> node = this.head;
         List<Node<T>> updates = new ArrayList<>();
         for (int i = (int) this.level - 1; i >= 0; i--) {
-			while (Objects.nonNull(node.item) && node.item.less(item)) {
+			while (Objects.nonNull(node.item) && node.item.less(item.self())) {
                 node = node.forwards.get(i);
             }
             updates.set(i, node);
@@ -60,7 +60,7 @@ public class SkipList<T> {
         }
     }
 
-    public IItem pop() {
+    public Item<T> pop() {
         return null;
     }
 
@@ -68,15 +68,24 @@ public class SkipList<T> {
 
     }
 
-    public boolean has(IItem item) {
+    public boolean has(Item<T> item) {
         return false;
     }
 
-    public IItem delete(IItem item) {
+    public Item<T> delete(Item<T> item) {
         return null;
     }
 
-    public IItem peek() {
+    public void print() {
+        for (int i = 0; i < this.level; i++) {
+            Node<T> n = this.head.forwards.get(i);
+            System.out.printf("Level[%d]\n", i);
+            n = n.forwards.get(i);
+        }
+        System.out.println("nil");
+    }
+
+    public Item<T> peek() {
         return null;
     }
 }
