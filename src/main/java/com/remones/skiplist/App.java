@@ -1,5 +1,7 @@
 package com.remones.skiplist;
 
+import java.util.Random;
+
 
 class Element<T> implements Item<T> {
     private final double score;
@@ -29,8 +31,10 @@ public final class App {
 
     public static void main(String[] args) {
         SkipList<String> sl = new SkipList<>(10);
+        final Random rand = new Random(System.currentTimeMillis());
         for (int i = 0; i < 10; i++) {
-            Element<String> e = new Element<>((double)i, String.format("value-%d", i));
+            int n = rand.nextInt(10);
+            Element<String> e = new Element<>((double)n, String.format("value-%d", n));
             sl.insert(e);
         }
         sl.print();

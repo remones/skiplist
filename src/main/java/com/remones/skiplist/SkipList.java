@@ -27,7 +27,7 @@ public class SkipList<T> {
 
     private long getRandLevel() {
         long level = 1;
-        while ((rand.nextLong()&0xffff) < (factor*0xffff)) {
+        while ((rand.nextInt()&0xffff) < (factor*0xffff)) {
             level++;
         }
         if (level < this.maxLevel) {
@@ -39,11 +39,11 @@ public class SkipList<T> {
     public void insert(Item<T> item) {
         Node<T> node = this.head;
         List<Node<T>> updates = new ArrayList<>();
-        for (int i = 0; i < this.level; i++) {
+        for (int i = 0; i < this.maxLevel; i++) {
             updates.add(null);
         }
         for (int i = (int) this.level - 1; i >= 0; i--) {
-			while (Objects.nonNull(node.item) && node.item.less(item)) {
+			while (Objects.nonNull(node.forwards.get(i)) && node.forwards.get(i).item.less(item)) {
                 node = node.forwards.get(i);
             }
             updates.set(i, node);
@@ -51,12 +51,12 @@ public class SkipList<T> {
         long level = this.getRandLevel();
         if (level > this.level) {
             for (int i = (int) this.level; i < level; i++) {
-                updates.add(this.head);
+                updates.set(i, this.head);
             }
             this.level = level;
         }
-        node = new Node<>((int) this.maxLevel, item);
-        for (int i = 0; i < this.level; i++) {
+        node = new Node<>((int) level, item);
+        for (int i = 0; i < level; i++) {
             Node<T> forward = updates.get(i).forwards.get(i);
             node.forwards.set(i, forward);
             updates.get(i).forwards.set(i, node);
@@ -82,13 +82,13 @@ public class SkipList<T> {
     public void print() {
         for (int i = 0; i < this.level; i++) {
             Node<T> n = this.head.forwards.get(i);
-            System.out.printf("level %d:\n", i);
-            while (n != null && n.item != null) {
-                System.out.printf("(%f, %s)\n", n.item.getScore(), n.item.getValue());
+            System.out.printf("Level[%d]: ", i);
+            while (Objects.nonNull(n) && Objects.nonNull(n.item)) {
+                System.out.printf("%d -> ", (int)n.item.getScore());
                 n = n.forwards.get(i);
             }
+            System.out.println("nil");
         }
-        System.out.println("nil");
     }
 
     public Item<T> peek() {
