@@ -16,7 +16,7 @@ public class SkipList<T> {
 
     public SkipList(long maxLevel) {
         this.maxLevel = maxLevel;
-        this.head = new Node<>(null);
+        this.head = new Node<>((int) maxLevel, null);
     }
 
     public long getLength() { return length; }
@@ -39,6 +39,9 @@ public class SkipList<T> {
     public void insert(Item<T> item) {
         Node<T> node = this.head;
         List<Node<T>> updates = new ArrayList<>();
+        for (int i = 0; i < this.level; i++) {
+            updates.add(null);
+        }
         for (int i = (int) this.level - 1; i >= 0; i--) {
 			while (Objects.nonNull(node.item) && node.item.less(item.self())) {
                 node = node.forwards.get(i);
@@ -48,11 +51,11 @@ public class SkipList<T> {
         long level = this.getRandLevel();
         if (level > this.level) {
             for (int i = (int) this.level; i < level; i++) {
-                updates.get(i).forwards.set(i, this.head);
+                updates.add(this.head);
             }
+            this.level = level;
         }
-        this.level = level;
-        node = new Node<>(item);
+        node = new Node<>((int) this.maxLevel, item);
         for (int i = 0; i < this.level; i++) {
             Node<T> forward = updates.get(i).forwards.get(i);
             node.forwards.set(i, forward);
@@ -79,7 +82,7 @@ public class SkipList<T> {
     public void print() {
         for (int i = 0; i < this.level; i++) {
             Node<T> n = this.head.forwards.get(i);
-            System.out.printf("Level[%d]\n", i);
+            System.out.printf("Level[%d]%s\n", i, n.item.self());
             n = n.forwards.get(i);
         }
         System.out.println("nil");
