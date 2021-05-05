@@ -43,7 +43,7 @@ public class SkipList<T> {
             updates.add(null);
         }
         for (int i = (int) this.level - 1; i >= 0; i--) {
-			while (Objects.nonNull(node.item) && node.item.less(item.self())) {
+			while (Objects.nonNull(node.item) && node.item.less(item)) {
                 node = node.forwards.get(i);
             }
             updates.set(i, node);
@@ -82,8 +82,11 @@ public class SkipList<T> {
     public void print() {
         for (int i = 0; i < this.level; i++) {
             Node<T> n = this.head.forwards.get(i);
-            System.out.printf("Level[%d]%s\n", i, n.item.self());
-            n = n.forwards.get(i);
+            System.out.printf("level %d:\n", i);
+            while (n != null && n.item != null) {
+                System.out.printf("(%f, %s)\n", n.item.getScore(), n.item.getValue());
+                n = n.forwards.get(i);
+            }
         }
         System.out.println("nil");
     }

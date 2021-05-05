@@ -1,29 +1,25 @@
 package com.remones.skiplist;
 
 
-class Element implements Item<Element> {
-    private final String value;
-    private final int score;
+class Element<T> implements Item<T> {
+    private final double score;
+    private final T value;
 
-    Element(int score, String value) {
+    Element(double score, T value) {
         this.score = score;
         this.value = value;
     }
 
-    public boolean less(Element other) {
+    public boolean less(Item<T> other) {
         return this.score < other.getScore();
     };
 
-    public Element self() {
-        return this;
-    }
-
-    public int getScore() {
+    public double getScore() {
         return this.score;
     }
 
-    public String print() {
-        return String.format("(%d, %s)", this.score, this.value);
+    public T getValue() {
+        return this.value;
     }
  }
 
@@ -32,9 +28,9 @@ public final class App {
     }
 
     public static void main(String[] args) {
-        SkipList<Element> sl = new SkipList<>(10);
+        SkipList<String> sl = new SkipList<>(10);
         for (int i = 0; i < 10; i++) {
-            Element e = new Element(i, String.format("value-%d", i));
+            Element<String> e = new Element<>((double)i, String.format("value-%d", i));
             sl.insert(e);
         }
         sl.print();
