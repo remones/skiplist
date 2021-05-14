@@ -61,6 +61,7 @@ public class SkipList<T> {
             node.forwards.set(i, forward);
             updates.get(i).forwards.set(i, node);
         }
+        this.length++;
     }
 
     public Item<T> pop() {
@@ -71,14 +72,51 @@ public class SkipList<T> {
 
     }
 
-    public boolean has(Item<T> item) {
-        return false;
-    }
-
-    public Item<T> delete(Item<T> item) {
+    public Item<T> get(Item<T> item) {
+        Node<T> node = this.head;
+        for (int i = (int)(this.level - 1); i >= 0; i--) {
+            while (Objects.nonNull(node.forwards.get(i)) && node.forwards.get(i).item.less(item)) {
+                node = node.forwards.get(i);
+            }
+        }
+        node = node.forwards.get(0);
+        if (Objects.nonNull(node) && !node.item.less(item) && !item.less(node.item)) {
+            return node.item;
+        }
         return null;
     }
 
+    public boolean has(Item<T> item) {
+        return Objects.nonNull(this.get(item));
+    }
+
+    public Item<T> delete(Item<T> item) {
+        Node<T> node = this.head;
+        List<Node<T>> updates = new ArrayList<>();
+        for (int i = (int)(this.level - 1); i >= 0; i--) {
+            while (Objects.nonNull(node.forwards.get(i)) && node.forwards.get(i).item.less(item)) {
+                node = node.forwards.get(i);
+            }
+            updates.set(i, node);
+        }
+        if (Objects.nonNull(node) && !node.item.less(item) && !item.less(node.item)) {
+            return node.item;
+        }
+
+        for (int i = 0; i < this.level; i++) {
+            if (updates.get(i).forwards.get(i).equals(node)) {
+                updates.get(i).forwards.set(i, node.forwards.get(i));
+            }
+        }
+
+        while (this.level > 1 && Objects.isNull(this.head.forwards.get((int)this.level - 1))) {
+            this.level--;
+        }
+        this.length--;
+        return node.item;
+    }
+
+    // for debug
     public void print() {
         for (int i = 0; i < this.level; i++) {
             Node<T> n = this.head.forwards.get(i);
