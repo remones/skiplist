@@ -65,11 +65,23 @@ public class SkipList<T> {
     }
 
     public Item<T> pop() {
-        return null;
+        if (this.length == 0) {
+            return null;
+        }
+        Node<T> node = this.head.forwards.get(0);
+        for (int i = (int) this.level - 1; i >= 0; i--) {
+            if (this.head.forwards.get(i).equals(node)) {
+                this.head.forwards.set(i, node.forwards.get(i));
+            }
+        }
+        while (this.level > 1 && Objects.isNull(this.head.forwards.get((int) (this.level - 1)))) {
+            this.level--;
+        }
+        this.length--;
+        return node.item;
     }
 
     public void clear() {
-
     }
 
     public Item<T> get(Item<T> item) {
