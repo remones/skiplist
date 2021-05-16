@@ -1,10 +1,11 @@
 package com.remones.skiplist;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 // import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Random;
+// import java.util.Random;
 
 class Element<T> implements Item<T> {
     private final double score;
@@ -26,7 +27,7 @@ class Element<T> implements Item<T> {
     public T getValue() {
         return this.value;
     }
- }
+}
 
 public class SkipListTest {
     /**
@@ -39,16 +40,9 @@ public class SkipListTest {
             Element<String> e = new Element<>((double)i, String.format("value-%d", i));
             sl.insert(e);
         }
-        sl.print();
-    }
-
-    @Test
-    public void testGet() {
-
-    }
-
-    @Test
-    public void testPop() {
-
+        for (int i = 0; i < 10; i++) {
+            Element<String> item = (Element<String>) sl.pop();
+            Assertions.assertEquals(i, item.getScore());
+        }
     }
 }
